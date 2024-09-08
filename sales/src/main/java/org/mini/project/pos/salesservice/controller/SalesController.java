@@ -26,15 +26,4 @@ public class SalesController {
     public ResponseEntity<Object> addSales(@RequestBody Sales sales) {
         return salesService.addSales(sales);
     }
-
-    @PutMapping("/{id}")
-    public ResponseEntity<Object> updateSalesById(@PathVariable("id") long id,
-                                                  @RequestBody Sales sales) {
-        return salesService.updateSalesById(id, sales);
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Object> deleteSalesById(@PathVariable("id") long id) {
-        return salesService.deleteSalesById(id);
-    }
 }

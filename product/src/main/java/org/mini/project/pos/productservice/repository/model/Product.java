@@ -19,4 +19,6 @@ public class Product {
     private String description;
     @Column(name = "quantity")
     private int quantity;
+    @Column(name = "price")
+    private int price;
 }

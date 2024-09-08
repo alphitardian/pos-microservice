@@ -89,12 +89,14 @@ public class ProductService {
         } else {
             tempProduct.setProductName(product.getProductName());
             tempProduct.setDescription(product.getDescription());
+            tempProduct.setQuantity(product.getQuantity());
+            tempProduct.setPrice(product.getPrice());
             productRepository.save(tempProduct);
 
-            logger.info("Product updated : " + product);
+            logger.info("Product updated : " + tempProduct);
             return ResponseEntity
                     .status(HttpStatus.OK)
-                    .body("Product updated : " + product);
+                    .body(tempProduct);
         }
     }
 
@@ -113,6 +115,65 @@ public class ProductService {
             return ResponseEntity
                     .status(HttpStatus.OK)
                     .body("Product with id " + id + " deleted");
+        }
+    }
+
+    public ResponseEntity<Object> subtractProductById(long id, int number) {
+        if (number <= 0) {
+            logger.error("Number must be greater than 0");
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body("Number must be greater than 0");
+        }
+
+        Product tempProduct = productRepository.findById(id);
+
+        if (tempProduct == null) {
+            logger.error("Cannot find product with id " + id);
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body("Cannot find product with id " + id);
+        } else {
+            if(number > tempProduct.getQuantity()) {
+                logger.error("Number greater than stock");
+                return ResponseEntity
+                        .status(HttpStatus.BAD_REQUEST)
+                        .body("Number greater than stock");
+            }
+
+            tempProduct.setQuantity(tempProduct.getQuantity() - number);
+            productRepository.save(tempProduct);
+
+            logger.info("Product updated : " + tempProduct);
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(tempProduct);
+        }
+    }
+
+    public ResponseEntity<Object> addProductById(long id, int number) {
+        if (number <= 0) {
+            logger.error("Number must be greater than 0");
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body("Number must be greater than 0");
+        }
+
+        Product tempProduct = productRepository.findById(id);
+
+        if (tempProduct == null) {
+            logger.error("Cannot find product with id " + id);
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body("Cannot find product with id " + id);
+        } else {
+            tempProduct.setQuantity(tempProduct.getQuantity() + number);
+            productRepository.save(tempProduct);
+
+            logger.info("Product updated : " + tempProduct);
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(tempProduct);
         }
     }
 }

@@ -37,4 +37,16 @@ public class ProductController {
     public ResponseEntity<Object> deleteProductById(@PathVariable("id") long id) {
         return productService.deleteProductById(id);
     }
+
+    @PutMapping("/subtract/{id}/{number}")
+    public ResponseEntity<Object> subtractProductById(@PathVariable("id") long id,
+                                                      @PathVariable("number") int number) {
+        return productService.subtractProductById(id, number);
+    }
+
+    @PutMapping("/add/{id}/{number}")
+    public ResponseEntity<Object> addProductById(@PathVariable("id") long id,
+                                                 @PathVariable("number") int number) {
+        return productService.addProductById(id, number);
+    }
 }
