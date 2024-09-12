@@ -1,0 +1,48 @@
+services:
+  pos-service:
+    image: pos
+    container_name: pos-service
+    build:
+      context: ./pos
+      dockerfile: Dockerfile
+    ports:
+      - "5050:5050"
+    networks:
+      - host
+
+  product-service:
+    image: product
+    container_name: product-service
+    build:
+      context: ./product
+      dockerfile: Dockerfile
+    ports:
+      - "6000:6000"
+    networks:
+      - host
+
+  sales-service:
+    image: sales
+    container_name: sales-service
+    build:
+      context: ./sales
+      dockerfile: Dockerfile
+    ports:
+      - "5001:5001"
+    networks:
+      - host
+
+  consumer-service:
+    image: consumer
+    container_name: consumer-service
+    build:
+      context: ./sales
+      dockerfile: Dockerfile
+    ports:
+      - "5002:5002"
+    networks:
+      - host
+
+networks:
+  host:
+    driver: bridge

@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: customer-service
+  labels:
+    app: customer-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      deployments: customer-service
+  template:
+    metadata:
+      labels:
+        deployments: customer-service
+    spec:
+      containers:
+        - name: customer-service
+          image: customer:latest
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 5002

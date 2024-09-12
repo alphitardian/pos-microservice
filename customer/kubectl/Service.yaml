@@ -1,0 +1,17 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: customer-service
+  labels:
+    app: customer-service
+spec:
+  ports:
+    - name: 5002-tcp
+      protocol: TCP
+      port: 5002
+      targetPort: 5002
+  internalTrafficPolicy: Cluster
+  type: ClusterIP
+  sessionAffinity: None
+  selector:
+    deployment: customer-service

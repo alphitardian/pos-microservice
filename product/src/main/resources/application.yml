@@ -2,7 +2,7 @@ spring:
   application:
     name: Product Service
   datasource:
-    url: jdbc:h2:file:/data/product
+    url: jdbc:h2:mem:product
     driverClassName: org.h2.Driver
     username: sa
     password: password
@@ -13,8 +13,15 @@ spring:
   h2:
     console:
       enabled: true
+
+  cloud:
+    kubernetes:
+      loadbalancer:
+        mode: service
+  config:
+    import: configserver:
 server:
-  port: 5000
+  port: 6000
 management:
   endpoints:
     web:

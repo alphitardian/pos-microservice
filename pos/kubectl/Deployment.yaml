@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pos-service
+  labels:
+    app: pos-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      deployments: pos-service
+  template:
+    metadata:
+      labels:
+        deployments: pos-service
+    spec:
+      containers:
+        - name: pos-service
+          image: pos:latest
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 5050
