@@ -13,15 +13,8 @@ spring:
   h2:
     console:
       enabled: true
-
-  cloud:
-    kubernetes:
-      loadbalancer:
-        mode: service
-  config:
-    import: configserver:
 server:
-  port: 6000
+  port: 5000
 management:
   endpoints:
     web:

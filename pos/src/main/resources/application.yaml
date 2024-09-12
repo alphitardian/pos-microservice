@@ -1,0 +1,36 @@
+server:
+  port: 5050
+
+microservice:
+  url-mapping:
+    product: http://product-service.default.svc.cluster.local:5000
+    sales: http://sales-service.default.svc.cluster.local:5001
+    customer: http://customer-service.default.svc.cluster.local:5002
+  name-service:
+    product: product-service
+    sales: sales-service
+    customer: customer-service
+
+spring:
+  datasource:
+    url: jdbc:h2:mem:transaction
+    driverClassName: org.h2.Driver
+    username: sa
+    password: password
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: update
+  h2:
+    console:
+      enabled: true
+
+feign:
+  circuitbreaker:
+    enabled: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include=*:

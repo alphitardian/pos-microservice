@@ -78,7 +78,7 @@ class CustomerService @Autowired constructor(
             username = newUsername,
             password = newPassword,
             paymentType = newPaymentType,
-            orderId = updateCustomer.orderId
+            orderId = customer.orderId
         )
 
         customerRepository.save(updateCustomer)

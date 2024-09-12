@@ -4,15 +4,18 @@ metadata:
   name: product-service
   labels:
     app: product-service
+    app.kubernetes.io/name: product-service
 spec:
   replicas: 1
   selector:
     matchLabels:
       apps: product-service
+      app.kubernetes.io/name: product-service
   template:
     metadata:
       labels:
         apps: product-service
+        app.kubernetes.io/name: product-service
     spec:
       containers:
         - name: product-service

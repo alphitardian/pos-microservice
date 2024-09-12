@@ -2,21 +2,21 @@ apiVersion: v1
 kind: Service
 metadata:
   labels:
-    app: customer-service
-  name: customer-service
+    app: pos-service
+  name: pos-service
   namespace: default
 spec:
   allocateLoadBalancerNodePorts: true
-  clusterIP: 10.107.175.45
+  clusterIP: 10.103.139.149
   clusterIPs:
-    - 10.107.175.45
+    - 10.103.139.149
   internalTrafficPolicy: Cluster
   ipFamilies:
     - IPv4
   ipFamilyPolicy: SingleStack
   ports:
-    - nodePort: 32119
-      port: 5002
+    - nodePort: 32679
+      port: 5050
   selector:
-    deployments: customer-service
+    deployments: pos-service
   type: LoadBalancer

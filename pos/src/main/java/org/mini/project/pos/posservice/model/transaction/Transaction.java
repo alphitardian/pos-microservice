@@ -1,19 +1,21 @@
-package org.mini.project.pos.posservice.model;
+package org.mini.project.pos.posservice.model.transaction;
 
+import jakarta.persistence.Entity;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import org.mini.project.pos.posservice.model.Sales;
 
 @Getter
 @Setter
 @Builder
 public class Transaction {
 
-  private Product product;
+  private TransactionProduct product;
 
   private Sales sales;
 
-  private Customer customer;
+  private TransactionCustomer customer;
 
   private long productId;
 
@@ -21,3 +23,4 @@ public class Transaction {
 
   private int quantity;
 }
+

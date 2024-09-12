@@ -13,10 +13,6 @@ spring:
   h2:
     console:
       enabled: true
-  cloud:
-    kubernetes:
-      loadbalancer:
-        mode: service
 server:
   port: 5001
 management:
