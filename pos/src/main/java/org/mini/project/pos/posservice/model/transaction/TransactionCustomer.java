@@ -18,4 +18,6 @@ public class TransactionCustomer {
     private String username;
 
     private List<Long> orderId;
+
+    private Long currentBalance;
 }

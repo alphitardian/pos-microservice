@@ -1,8 +1,9 @@
-package org.mini.project.pos.posservice.model;
+package org.mini.project.pos.posservice.model.customer;
 
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import org.mini.project.pos.posservice.model.PaymentType;
 
 import java.util.List;
 
@@ -22,4 +23,6 @@ public class Customer {
   private List<PaymentType> paymentTypes;
 
   private List<Long> orderId;
+
+  private Long balance;
 }

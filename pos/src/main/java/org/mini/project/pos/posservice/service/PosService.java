@@ -6,8 +6,10 @@ import org.mini.project.pos.posservice.client.CustomerClient;
 import org.mini.project.pos.posservice.client.ProductClient;
 import org.mini.project.pos.posservice.client.SalesClient;
 import org.mini.project.pos.posservice.helper.ObjectMapperUtil;
+import org.mini.project.pos.posservice.model.customer.Customer;
 import org.mini.project.pos.posservice.model.Product;
 import org.mini.project.pos.posservice.model.Sales;
+import org.mini.project.pos.posservice.model.customer.CustomerBalance;
 import org.mini.project.pos.posservice.model.transaction.Transaction;
 import org.mini.project.pos.posservice.model.transaction.TransactionCustomer;
 import org.mini.project.pos.posservice.model.transaction.TransactionProduct;
@@ -109,6 +111,11 @@ public class PosService {
             List<Long> currentOrderIds = customer.getOrderId();
             currentOrderIds.add(transaction.getSales().getId());
             customer.setOrderId(currentOrderIds);
+            log.info("Getting customer with id {}: {}", transaction.getCustomerId(), ObjectMapperUtil.writeValueAsString(customer));
+
+            // Temporary save customer
+            TransactionCustomer transactionCustomer = this.buildTransactionCustomer(customer);
+            transaction.setCustomer(transactionCustomer);
             return Mono.just(customer);
         })
         .flatMap(customer -> Mono.fromCallable(() -> customerClient.updateCustomer(customer.getId(), customer)))
@@ -119,12 +126,21 @@ public class PosService {
         })
         .flatMap(unused -> Mono.fromCallable(() -> customerClient.getCustomerById(transaction.getCustomerId())))
         .flatMap(customer -> {
-            TransactionCustomer transactionCustomer = TransactionCustomer.builder()
-                    .name(customer.getName())
-                    .username(customer.getUsername())
-                    .orderId(customer.getOrderId())
-                    .id(customer.getId())
-                    .build();
+          CustomerBalance balanceToDeduct = CustomerBalance.builder()
+              .balance((long) transaction.getSales().getAmount())
+              .build();
+
+          return Mono.just(balanceToDeduct);
+        })
+        .flatMap(customer -> Mono.fromCallable(() -> customerClient.updateCustomerBalance(transaction.getCustomerId(), customer)))
+        .doOnNext(objectResponseEntity -> {
+          if (objectResponseEntity.getStatusCode().is2xxSuccessful()) {
+            log.info("Success update customer balance: {}", ObjectMapperUtil.writeValueAsString(objectResponseEntity.getBody()));
+          }
+        })
+        .flatMap(unused -> Mono.fromCallable(() -> customerClient.getCustomerById(transaction.getCustomerId())))
+        .flatMap(customer -> {
+            TransactionCustomer transactionCustomer = this.buildTransactionCustomer(customer);
             transaction.setCustomer(transactionCustomer);
             return Mono.just(transaction);
         })
@@ -158,5 +174,15 @@ public class PosService {
               .body(transactions);
         });
 
+  }
+
+  private TransactionCustomer buildTransactionCustomer(Customer customer) {
+    return TransactionCustomer.builder()
+        .name(customer.getName())
+        .username(customer.getUsername())
+        .currentBalance(customer.getBalance())
+        .orderId(customer.getOrderId())
+        .id(customer.getId())
+        .build();
   }
 }

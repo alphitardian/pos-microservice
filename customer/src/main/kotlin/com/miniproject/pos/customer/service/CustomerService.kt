@@ -1,6 +1,8 @@
 package com.miniproject.pos.customer.service
 
+import com.miniproject.pos.customer.dto.RequestBalance
 import com.miniproject.pos.customer.dto.RequestCustomer
+import com.miniproject.pos.customer.dto.RequestUpdateInfoCust
 import com.miniproject.pos.customer.dto.ResponseDto
 import com.miniproject.pos.customer.model.Customer
 import com.miniproject.pos.customer.repository.CustomerRepository
@@ -14,9 +16,9 @@ import java.util.logging.Logger
 
 @Service
 class CustomerService @Autowired constructor(
-    private val customerRepository: CustomerRepository,
-    private val logger: Logger,
-    private val passwordEncoder: PasswordEncoder
+        private val customerRepository: CustomerRepository,
+        private val logger: Logger,
+        private val passwordEncoder: PasswordEncoder
 ) {
 
     fun findAll(): List<Customer> {
@@ -32,7 +34,7 @@ class CustomerService @Autowired constructor(
 
 
     fun findById(id: Long): Customer? {
-       val customer = customerRepository.findCustomerById(id) ?: throw NotFoundException()
+        val customer = customerRepository.findCustomerById(id) ?: throw NotFoundException()
 
         logger.info("Found Customer $id : $customer")
         return customer
@@ -45,10 +47,11 @@ class CustomerService @Autowired constructor(
         logger.info("Password after Hash: $hashedPassword")
 
         val customerAfterHash = Customer(
-            name = customer.name,
-            username = customer.username,
-            password = hashedPassword,
-            paymentType = customer.paymentType,
+                name = customer.name,
+                username = customer.username,
+                password = hashedPassword,
+                paymentType = customer.paymentType,
+                balance = customer.balance
         )
 
         val newCustomer = customerRepository.save(customerAfterHash) ?: throw InvalidParameterException()
@@ -57,13 +60,15 @@ class CustomerService @Autowired constructor(
     }
 
     fun deleteById(id: Long): ResponseDto {
-        customerRepository.deleteById(id) ?: throw InvalidParameterException()
+
+        customerRepository.findCustomerById(id)?: throw NotFoundException()
+        customerRepository.deleteById(id)
         logger.info("Delete succesfully $id")
         return responseSuccess("Successfully Deleted ID: $id")
 
     }
 
-    fun updateById(id:Long, customer: Customer): ResponseDto {
+    fun updateInfoCustById(id:Long, customer: Customer): ResponseDto {
         var updateCustomer = customerRepository.findCustomerById(id)?: throw NotFoundException()
         logger.info("Success get Customer: $customer")
 
@@ -71,18 +76,42 @@ class CustomerService @Autowired constructor(
         val newUsername = customer.username
         val newPassword = customer.password
         val newPaymentType = customer.paymentType
+        val newOrderId = customer.orderId
 
         updateCustomer = Customer(
-            id = updateCustomer.id,
-            name = newName,
-            username = newUsername,
-            password = newPassword,
-            paymentType = newPaymentType,
-            orderId = customer.orderId
+                id = updateCustomer.id,
+                name = newName ?: updateCustomer.name,
+                username = newUsername ?: updateCustomer.username,
+                password = newPassword ?: updateCustomer.password,
+                paymentType = newPaymentType ?: updateCustomer.paymentType,
+                balance = updateCustomer.balance,
+                orderId = newOrderId
         )
 
         customerRepository.save(updateCustomer)
         logger.info("Success Update $id with new data $updateCustomer")
         return responseSuccess("Successfully Updated ID: $id")
     }
+
+    fun updateBalanceCustById(id:Long, customer:RequestBalance): ResponseDto{
+        var updateCustomer = customerRepository.findCustomerById(id)?: throw NotFoundException()
+        logger.info("Success get Customer: $customer")
+
+        val newBalance = updateCustomer.balance!! - customer.balance
+
+        updateCustomer = Customer(
+                id = updateCustomer.id,
+                name = updateCustomer.name,
+                username = updateCustomer.username,
+                password = updateCustomer.password,
+                paymentType = updateCustomer.paymentType,
+                balance = newBalance,
+                orderId = updateCustomer.orderId
+        )
+        customerRepository.save(updateCustomer)
+        logger.info("Success Update $id with new data $customer")
+        return responseSuccess("Successfully Updated Balance to RP.${updateCustomer.balance} in ID: $id")
+    }
+
+
 }

@@ -2,10 +2,10 @@ package com.miniproject.pos.customer.dto
 
 import com.miniproject.pos.customer.model.PaymentType
 
-data class RequestCustomer (
+data class RequestUpdateInfoCust (
     val name: String?,
     val username: String?,
     val password: String?,
     val paymentType: MutableList<PaymentType>?,
-    val balance: Long?
+    val orderId: MutableList<Long>?
 )

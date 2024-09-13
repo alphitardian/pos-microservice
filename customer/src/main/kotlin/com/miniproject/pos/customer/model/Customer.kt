@@ -15,8 +15,8 @@ data class Customer(
     val username: String?,
     val password: String?,
     val paymentType: MutableList<PaymentType>?,
-    val orderId: MutableList<Long>? = mutableListOf()
-
+    val orderId: MutableList<Long>? = mutableListOf(),
+    val balance: Long?
 )    {
-    constructor() : this(0, "", "", "", mutableListOf(PaymentType.CASH), mutableListOf())
+    constructor() : this(0, "", "", "", mutableListOf(PaymentType.CASH), mutableListOf(), 0)
 }

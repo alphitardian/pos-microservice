@@ -1,7 +1,8 @@
 package org.mini.project.pos.posservice.client;
 
 import org.mini.project.pos.posservice.config.WebClientConfiguration;
-import org.mini.project.pos.posservice.model.Customer;
+import org.mini.project.pos.posservice.model.customer.Customer;
+import org.mini.project.pos.posservice.model.customer.CustomerBalance;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -24,10 +25,16 @@ public interface CustomerClient {
     @PostMapping("/customers/create")
     Customer createCustomer(@RequestBody Customer customer);
 
-    @PutMapping("/customers/update/{id}")
+    @PutMapping("/customers/update/info/{id}")
     ResponseEntity<Object> updateCustomer(
         @PathVariable("id") long id,
         @RequestBody Customer customer
+    );
+
+    @PutMapping("/customers/update/balance/{id}")
+    ResponseEntity<Object> updateCustomerBalance(
+        @PathVariable("id") long id,
+        @RequestBody CustomerBalance customer
     );
 
     @DeleteMapping("/customers/delete/{id}")
